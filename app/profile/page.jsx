@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Profile from "@components/Profile";
-import React from "react";
 
 const MyProfile = () => {
   const router = useRouter();
@@ -17,7 +16,8 @@ const MyProfile = () => {
       setPosts(data);
     };
     if (session?.user.id) fetchPosts();
-  }, []);
+  }, [session?.user.id]);
+
   const handleEdit = (post) => {
     router.push(`/update-prompt?id=${post._id}`);
   };

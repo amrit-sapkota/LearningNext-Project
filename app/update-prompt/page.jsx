@@ -1,27 +1,20 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; // Update import to use next/router instead of next/navigation
-import dynamic from "next/dynamic";
 
-const Form = dynamic(() => import("@components/Form"), { ssr: false });
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+
+import Form from "@components/Form";
 
 const UpdatePrompt = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const promptId = searchParams.get("id");
 
-  // Check if we are on the client side before using useSearchParams
-  const isClient = typeof window !== "undefined";
-  const searchParams = isClient
-    ? new URLSearchParams(window.location.search)
-    : null;
-  const promptId = searchParams?.get("id");
-
-  const [post, setPost] = useState({ prompt: "", tag: "" });
+  const [post, setPost] = useState({ prompt: "", tag: "", });
   const [submitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const getPromptDetails = async () => {
-      if (!promptId) return;
-
       const response = await fetch(`/api/prompt/${promptId}`);
       const data = await response.json();
 
@@ -31,7 +24,7 @@ const UpdatePrompt = () => {
       });
     };
 
-    getPromptDetails();
+    if (promptId) getPromptDetails();
   }, [promptId]);
 
   const updatePrompt = async (e) => {
@@ -61,7 +54,7 @@ const UpdatePrompt = () => {
 
   return (
     <Form
-      type="Edit"
+      type='Edit'
       post={post}
       setPost={setPost}
       submitting={submitting}
